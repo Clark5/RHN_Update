@@ -55,7 +55,7 @@ def CountPairs(num_node, initial, final):
             if i != j:
                 count += diff_groups[i]*diff_groups[j]
     
-    return count/2
+    return count/4
 
 def CountPairsFix(num_node, common_edges):
     labels = [0 for i in range(num_node)]
@@ -91,7 +91,7 @@ def CountPairsFix(num_node, common_edges):
             if i != j:
                 count += diff_groups[i]*diff_groups[j]
     
-    return count/2
+    return count/4
 
 
 def GenerateNetwork(node_degrees):
@@ -188,6 +188,7 @@ def FindPlan_A(num_node, initial, final):
     M = gurobipy.Model()
     x = M.addVars(num_updated_edge, vtype=gurobipy.GRB.BINARY, name="x")
     y = M.addVars(num_updated_edge, vtype=gurobipy.GRB.BINARY, name="y")
+
     minimize = M.addVar(vtype=gurobipy.GRB.INTEGER, name="minimize")
 
     M.update()
@@ -339,27 +340,27 @@ if __name__ == "__main__":
 
     # FindPlan_A(num_node, initial_edge_list, final_edge_list)
 
-    times = {}
-    for num_node in [10, 20, 50, 100, 200, 500, 1000]:
-        for degree in [2, 4, 6, 8, 10]:
-            total_time = 0
-            for time in range(10):
-                node_degree = [degree for i in range(num_node)]
-                initial_edge_list = GenerateNetwork(node_degree)
-                final_edge_list = GenerateNetwork(node_degree)
-
-                total_time += FindPlan_B(num_node, initial_edge_list, final_edge_list)
-            times[(num_node, degree)] = total_time/10
-    for key in times.keys():
-        print(key[0], key[1], times[key])
-
-    # for num_node in [10, 20, 50, 100, 200, 500, 1000]:
+    # times = {}
+    # for num_node in [10, 50, 100, 500, 1000]:
     #     for degree in [2, 4, 6, 8, 10]:
-    #         total_count = 0
+    #         total_time = 0
     #         for time in range(10):
     #             node_degree = [degree for i in range(num_node)]
     #             initial_edge_list = GenerateNetwork(node_degree)
     #             final_edge_list = GenerateNetwork(node_degree)
 
-    #             total_count += CountPairs(num_node, initial_edge_list, final_edge_list)
-    #         print("%.1f, %.1f, %.1f" % (num_node, degree, total_count/10))
+    #             total_time += FindPlan_B(num_node, initial_edge_list, final_edge_list)
+    #         times[(num_node, degree)] = total_time/10
+    # for key in times.keys():
+    #     print(key[0], key[1], times[key])
+
+    for num_node in [10, 50, 100,500, 1000]:
+        for degree in [2, 4, 6, 8, 10]:
+            total_count = 0
+            for time in range(20):
+                node_degree = [degree for i in range(num_node)]
+                initial_edge_list = GenerateNetwork(node_degree)
+                final_edge_list = GenerateNetwork(node_degree)
+
+                total_count += CountPairs(num_node, initial_edge_list, final_edge_list)
+            print("%.4f, %.4f, %.4f, %.4f" % (num_node, degree, total_count/20/(num_node*num_node/2), total_count/20,))
